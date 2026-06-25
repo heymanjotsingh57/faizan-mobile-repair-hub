@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Button } from "@/components/ui/button";
+import { CurrencyCalculator } from "@/components/app/CurrencyCalculator";
 import { LogOut, Mail, Shield, User } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/account")({
@@ -58,6 +59,8 @@ function AccountPage() {
           <Row icon={Mail} label="Email" value={email} />
           <Row icon={Shield} label="Role" value={role} last />
         </div>
+
+        <CurrencyCalculator />
 
         <Button variant="outline" onClick={signOut} className="h-12 w-full rounded-xl text-base font-semibold">
           <LogOut className="h-4 w-4" /> Sign out

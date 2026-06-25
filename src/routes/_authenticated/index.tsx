@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchRepairs, formatPrice, type Repair } from "@/lib/repairs";
 import { supabase } from "@/integrations/supabase/client";
 import { RepairCard } from "@/components/app/RepairCard";
+import { ThemeToggle } from "@/components/app/ThemeToggle";
 import {
   CalendarDays,
   Clock,
@@ -58,9 +59,12 @@ function Dashboard() {
   return (
     <div className="animate-enter">
       <header className="bg-gradient-to-br from-primary to-primary-glow px-5 pb-8 pt-7 text-primary-foreground">
-        <div className="flex items-center gap-2 text-sm opacity-90">
-          <Smartphone className="h-4 w-4" />
-          RepairDesk
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm opacity-90">
+            <Smartphone className="h-4 w-4" />
+            RepairDesk
+          </div>
+          <ThemeToggle className="border-white/30 bg-white/15 text-primary-foreground hover:bg-white/25" />
         </div>
         <h1 className="mt-3 text-2xl font-extrabold">Hi {name} 👋</h1>
         <p className="mt-1 text-sm opacity-90">Here's what's happening at the counter today.</p>
