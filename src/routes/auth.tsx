@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { signUpStaff } from "@/lib/auth.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,10 +21,12 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const signUp = useServerFn(signUpStaff);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accessCode, setAccessCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -36,21 +40,10 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: window.location.origin,
-            data: { full_name: fullName },
-          },
-        });
+        await signUp({ data: { email, password, fullName, accessCode } });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Account created. You can sign in now.");
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signInError) {
-          setMode("signin");
-          return;
-        }
+        toast.success("Welcome to RepairDesk!");
         navigate({ to: "/" });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -63,6 +56,8 @@ function AuthPage() {
       setLoading(false);
     }
   }
+
+  const inputCls = "h-12 rounded-xl";
 
   return (
     <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-background px-5 py-10">
@@ -102,7 +97,7 @@ function AuthPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Jane Doe"
                   required
-                  className="h-12 rounded-xl"
+                  className={inputCls}
                 />
               </div>
             )}
@@ -115,7 +110,7 @@ function AuthPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@shop.com"
                 required
-                className="h-12 rounded-xl"
+                className={inputCls}
               />
             </div>
             <div className="space-y-1.5">
@@ -127,10 +122,23 @@ function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                minLength={6}
-                className="h-12 rounded-xl"
+                minLength={mode === "signup" ? 8 : 1}
+                className={inputCls}
               />
             </div>
+            {mode === "signup" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="code">Staff access code</Label>
+                <Input
+                  id="code"
+                  value={accessCode}
+                  onChange={(e) => setAccessCode(e.target.value)}
+                  placeholder="Provided by the shop owner"
+                  required
+                  className={inputCls}
+                />
+              </div>
+            )}
             <Button type="submit" disabled={loading} className="h-12 w-full rounded-xl text-base font-semibold">
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               {mode === "signin" ? "Sign in" : "Create account"}
