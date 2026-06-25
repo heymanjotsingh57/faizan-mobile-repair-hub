@@ -9,7 +9,7 @@ export type StatusHistory = Database["public"]["Tables"]["repair_status_history"
 export const STATUSES: { value: RepairStatus; label: string }[] = [
   { value: "received", label: "Received" },
   { value: "in_progress", label: "In Progress" },
-  { value: "ready", label: "Ready" },
+  { value: "ready", label: "Ready for Pickup" },
   { value: "delivered", label: "Delivered" },
 ];
 
@@ -29,6 +29,34 @@ export const PRIORITIES: { value: RepairPriority; label: string }[] = [
   { value: "normal", label: "Normal" },
   { value: "urgent", label: "Urgent" },
 ];
+
+/**
+ * Validate a phone number for repair intake.
+ * Returns an error message, or null when valid.
+ */
+export function validatePhone(raw: string): string | null {
+  const value = (raw ?? "").trim();
+  if (!value) return "Phone number is required";
+  if (!/^[\d\s+()-]+$/.test(value))
+    return "Phone number can only contain digits, spaces, and + ( ) -";
+  const digits = value.replace(/\D/g, "");
+  if (digits.length < 10) return "Enter a valid phone number (at least 10 digits)";
+  if (digits.length > 15) return "Phone number is too long";
+  if (/^(\d)\1+$/.test(digits)) return "Enter a real phone number, not a repeated digit";
+  if (isSequential(digits)) return "Enter a real phone number";
+  return null;
+}
+
+function isSequential(digits: string): boolean {
+  let asc = true;
+  let desc = true;
+  for (let i = 1; i < digits.length; i++) {
+    const diff = digits.charCodeAt(i) - digits.charCodeAt(i - 1);
+    if (diff !== 1) asc = false;
+    if (diff !== -1) desc = false;
+  }
+  return asc || desc;
+}
 
 export const formatPrice = (n: number) =>
   new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
