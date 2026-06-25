@@ -78,20 +78,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "RepairDesk — Mobile Repair Shop Management" },
+      { title: "faizan-Repair-hub – Mobile Repair Shop Management System" },
       {
         name: "description",
         content:
           "Register repair jobs, update status, search instantly and track customer history — built for mobile repair counters.",
       },
       { name: "author", content: "RepairDesk" },
-      { property: "og:title", content: "RepairDesk — Mobile Repair Shop Management" },
+      { property: "og:title", content: "faizan-Repair-hub – Mobile Repair Shop Management System" },
       {
         property: "og:description",
         content: "Digital repair management for mobile phone shops. Fast, mobile-first, paperless.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "faizan-Repair-hub – Mobile Repair Shop Management System" },
+      { name: "description", content: "A modern mobile repair shop management system for tracking repair jobs, customer details, repair status, quoted prices, warranties, urgent jobs, and daily busin" },
+      { property: "og:description", content: "A modern mobile repair shop management system for tracking repair jobs, customer details, repair status, quoted prices, warranties, urgent jobs, and daily busin" },
+      { name: "twitter:description", content: "A modern mobile repair shop management system for tracking repair jobs, customer details, repair status, quoted prices, warranties, urgent jobs, and daily busin" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c7596b12-8798-478f-a128-04caa58ca3fc/id-preview-24a0d8cc--8d1fbf0d-2296-40b4-b399-b7321dff72c6.lovable.app-1782380243393.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c7596b12-8798-478f-a128-04caa58ca3fc/id-preview-24a0d8cc--8d1fbf0d-2296-40b4-b399-b7321dff72c6.lovable.app-1782380243393.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
