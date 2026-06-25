@@ -6,8 +6,9 @@ import { signUpStaff } from "@/lib/auth.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Smartphone, Loader2 } from "lucide-react";
+import { Smartphone, Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/app/ThemeToggle";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -28,6 +29,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [accessCode, setAccessCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -60,7 +62,10 @@ function AuthPage() {
   const inputCls = "h-12 rounded-xl";
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-background px-5 py-10">
+    <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-background px-5 py-10 sm:px-6">
+      <div className="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
       <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
       <div className="relative mx-auto w-full max-w-sm animate-enter">
         <div className="mb-8 flex flex-col items-center text-center">
@@ -115,16 +120,31 @@ function AuthPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={mode === "signup" ? 8 : 1}
-                className={inputCls}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={mode === "signup" ? 8 : 1}
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                  className={`${inputCls} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {mode === "signup" && (
+                <p className="text-xs text-muted-foreground">Use at least 8 characters.</p>
+              )}
             </div>
             {mode === "signup" && (
               <div className="space-y-1.5">

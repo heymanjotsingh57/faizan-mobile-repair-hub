@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
+import { ThemeToggle } from "@/components/app/ThemeToggle";
 
 export function PageHeader({
   title,
@@ -32,7 +33,10 @@ export function PageHeader({
           <h1 className="truncate text-lg font-extrabold text-foreground">{title}</h1>
           {subtitle && <p className="truncate text-xs text-muted-foreground">{subtitle}</p>}
         </div>
-        <div className="shrink-0">{action}</div>
+        <div className="flex shrink-0 items-center gap-2">
+          {action}
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
