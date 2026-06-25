@@ -12,22 +12,27 @@ export const Route = createFileRoute("/_authenticated/jobs")({
   component: JobsPage,
 });
 
-type Filter = "all" | RepairStatus;
+type Filter = "active" | RepairStatus;
 
 function JobsPage() {
   const { data: repairs } = useSuspenseQuery(repairsQuery);
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter, setFilter] = useState<Filter>("active");
 
-  const filtered = filter === "all" ? repairs : repairs.filter((r) => r.status === filter);
+  const filtered =
+    filter === "active"
+      ? repairs.filter((r) => r.status !== "delivered")
+      : repairs.filter((r) => r.status === filter);
 
   const tabs: { value: Filter; label: string }[] = [
-    { value: "all", label: "All" },
+    { value: "active", label: "Active" },
     ...STATUSES.map((s) => ({ value: s.value as Filter, label: s.label })),
   ];
 
+  const activeCount = repairs.filter((r) => r.status !== "delivered").length;
+
   return (
     <div className="animate-enter">
-      <PageHeader title="All Jobs" subtitle={`${repairs.length} total repairs`} />
+      <PageHeader title="All Jobs" subtitle={`${activeCount} active · ${repairs.length} total`} />
       <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3">
         {tabs.map((t) => (
           <button

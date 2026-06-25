@@ -15,6 +15,7 @@ import {
   PRIORITIES,
   STATUSES,
   WARRANTY_OPTIONS,
+  validatePhone,
   type RepairInput,
   type RepairPriority,
   type RepairStatus,
@@ -72,12 +73,20 @@ export function RepairForm({
     condition_notes: initial?.condition_notes ?? "",
     status: initial?.status ?? "received",
   });
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const set = <K extends keyof RepairInput>(key: K, value: RepairInput[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return; // prevent duplicate submissions
+    const phoneErr = validatePhone(form.phone_number);
+    if (phoneErr) {
+      setPhoneError(phoneErr);
+      return;
+    }
+    setPhoneError(null);
     onSubmit({
       ...form,
       imei: form.imei?.trim() || null,
@@ -106,11 +115,17 @@ export function RepairForm({
             id="phone_number"
             type="tel"
             value={form.phone_number}
-            onChange={(e) => set("phone_number", e.target.value)}
+            onChange={(e) => {
+              set("phone_number", e.target.value);
+              if (phoneError) setPhoneError(validatePhone(e.target.value));
+            }}
+            onBlur={(e) => setPhoneError(validatePhone(e.target.value))}
             placeholder="+1 555 123 4567"
             required
-            className={inputCls}
+            aria-invalid={!!phoneError}
+            className={`${inputCls} ${phoneError ? "border-destructive focus-visible:ring-destructive" : ""}`}
           />
+          {phoneError && <p className="text-xs font-medium text-destructive">{phoneError}</p>}
         </Field>
       </Section>
 
